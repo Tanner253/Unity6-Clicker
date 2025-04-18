@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Your Project Name</title>
+    <!-- Add other head elements like styles, icons as needed -->
+  </head>
+  <body>
+    <!-- Unity container and loading elements -->
+    <div id="unity-container">
+      <canvas id="unity-canvas" style="width: 100%; height: 100%;"></canvas>
+      <!-- Add loading bar, footer, etc. from your preferred default template if needed -->
+    </div>
+
+    <!-- Firebase JS SDK Includes (Compat versions for Unity Wrapper) -->
+    <!-- Make sure these versions are compatible with the Firebase Unity SDK version you are using -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <!-- Optional: Add other Firebase services like database, firestore, functions if needed -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script> -->
+
+    <!-- Firebase Initialization Script -->
+    <script>
+      // --- Firebase Configuration ---
+      // Reads configuration from environment variables set during build time
+      const firebaseConfig = {
+        // IMPORTANT: Read API Key from environment variable (replaced during build)
+        apiKey: "%%FIREBASE_API_KEY%%", // Placeholder replaced by build process
+        authDomain: "%%FIREBASE_AUTH_DOMAIN%%", // Placeholder replaced by build process
+        databaseURL: "%%FIREBASE_DATABASE_URL%%", // Placeholder replaced by build process
+        projectId: "%%FIREBASE_PROJECT_ID%%", // Placeholder replaced by build process
+        storageBucket: "%%FIREBASE_STORAGE_BUCKET%%", // Placeholder replaced by build process
+        messagingSenderId: "%%FIREBASE_MESSAGING_SENDER_ID%%", // Placeholder replaced by build process
+        appId: "%%FIREBASE_APP_ID%%" // Placeholder replaced by build process
+        // measurementId: "%%FIREBASE_MEASUREMENT_ID%%" // Optional: Placeholder replaced by build process
+      };
+
+      // --- Initialize Firebase ---
+      try {
+        // Check if ANY placeholder was NOT replaced
+        const placeholders = [
+          "%%FIREBASE_API_KEY%%",
+          "%%FIREBASE_AUTH_DOMAIN%%",
+          "%%FIREBASE_DATABASE_URL%%",
+          "%%FIREBASE_PROJECT_ID%%",
+          "%%FIREBASE_STORAGE_BUCKET%%",
+          "%%FIREBASE_MESSAGING_SENDER_ID%%",
+          "%%FIREBASE_APP_ID%%"
+          // "%%FIREBASE_MEASUREMENT_ID%%" // Optional
+        ];
+        const missingConfig = Object.entries(firebaseConfig).some(([key, value]) => placeholders.includes(value));
+
+        if (missingConfig) {
+           console.warn("One or more Firebase configuration placeholders (%%FIREBASE_...%%) were not replaced. Ensure the build process correctly substitutes all required values using GitHub Secrets (e.g., VITE_FIREBASE_API_KEY, VITE_FIREBASE_PROJECT_ID, etc.).");
+           // Optionally prevent initialization or show a user message
+        } else {
+          firebase.initializeApp(firebaseConfig);
+          console.log("Firebase JS SDK Initialized from Template");
+        }
+      } catch (e) {
+        console.error("Error initializing Firebase from template:", e);
+      }
+    </script>
+    <!-- End Firebase Initialization -->
+
+    <!-- Unity Loader Script -->
+    <!-- IMPORTANT: This script tag MUST come *after* the Firebase initialization -->
+    <script src="{{{ LOADER_FILENAME }}}"></script>
+
+    <script>
+      // Standard Unity instantiation script
+      // Ensure this matches your Unity version's requirements
+      var buildUrl = "Build"; // Default build folder name
+      var config = {
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+#if USE_WASM
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
+#endif
+#if MEMORY_FILENAME
+        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
+#endif
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "{{{ COMPANY_NAME }}}",
+        productName: "{{{ PRODUCT_NAME }}}",
+        productVersion: "{{{ PRODUCT_VERSION }}}",
+        // Add other config options like showBanner if needed
+      };
+
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar"); // Assuming you have one
+      var progressBarFull = document.querySelector("#unity-progress-bar-full"); // Assuming you have one
+
+      // Show/hide loading bar if you have one
+      if (loadingBar) loadingBar.style.display = "block";
+
+      createUnityInstance(canvas, config, (progress) => {
+        if (progressBarFull) progressBarFull.style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        if (loadingBar) loadingBar.style.display = "none";
+        // Add fullscreen button logic, etc., if needed
+      }).catch((message) => {
+        alert(message);
+      });
+    </script>
+  </body>
+</html> 
