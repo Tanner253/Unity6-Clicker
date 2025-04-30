@@ -5,15 +5,15 @@ Deployed game
 deployed to google store too
 
 
-4/22
+- 4/22
 enhanced leaderboards, feedback on production rate now includes manual clicks, prestige costs scales, lchat ui fixed for mobile 
 
-4/23
+- 4/23
 fixed username logic, moved username logic to settings panel, age verificationd oes not reset username now, feedback renders decimals again, prestie costs scales exponentially
 
-4/24 setup refactor
-4/25 refactor complete - fruit upgrades now scalable and use OOP for duplication and reusabiltiy. prestige cost scaling balance. lemon spawn balance. formatting fix on count, username saving logic retouched.
-4/28 :
+- 4/24 setup refactor
+- 4/25 refactor complete - fruit upgrades now scalable and use OOP for duplication and reusabiltiy. prestige cost scaling balance. lemon spawn balance. formatting fix on count, username saving logic retouched.
+- 4/28 :
 Initial Problem: I observed that after successfully identifying a player and receiving a JWT access token via a POST to /api/players/identify, subsequent authorized GET requests (like /api/players/{id}/gameState and /api/players/{id}/muted) were failing with a 403 Forbidden error in my Unity client. The API logs confirmed this, indicating the user subject (sub claim) was being read as NULL within the controller action, causing my authorization check to fail.
 Investigation & Diagnostics:
 I first checked my API's appsettings.json and corrected the Jwt:Issuer and Jwt:Audience settings to match my local development URL (http://localhost:5238) instead of the production Azure URL.
